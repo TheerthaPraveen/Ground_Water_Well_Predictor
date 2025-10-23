@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Water Well Prediction</title>
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #11998e, #38ef7d); /* Water-inspired colors */
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        .card {
+            max-width: 700px; /* Slightly wider */
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.25);
+            border: none;
+            padding: 25px;
+        }
+        .card-header {
+            background: linear-gradient(to right, #004d40, #00695c); /* Dark teal */
+            color: white;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: 0.3s;
+        }
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0px 0px 10px rgba(0, 150, 136, 0.5);
+            border-color: #009688;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #00695c, #26a69a);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #26a69a, #004d40);
+            transform: scale(1.05);
+            box-shadow: 0px 4px 15px rgba(0, 150, 136, 0.3);
+        }
+        .result-box {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            color: black;
+            animation: fadeIn 1s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="card-header">💧 Water Well Prediction</div>
+        <div class="card-body">
+            <form method="POST" action="{% url 'predict' %}">
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">🌱 Soil Type</label>
+                            <select class="form-select" name="soil_type">
+                                <option value="Sandy">Sandy</option>
+                                <option value="Clay">Clay</option>
+                                <option value="Silty">Silty</option>
+                                <option value="Rocky">Rocky</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">🪨 Rock Type</label>
+                            <select class="form-select" name="rock_type">
+                                <option value="Igneous">Igneous</option>
+                                <option value="Sedimentary">Sedimentary</option>
+                                <option value="Metamorphic">Metamorphic</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">🌧 Rainfall (mm/year)</label>
+                            <input type="number" class="form-control" name="rainfall" required>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">🌡 Temperature (°C)</label>
+                            <input type="number" class="form-control" name="temperature" step="0.1" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">💧 Humidity (%)</label>
+                            <input type="number" class="form-control" name="humidity" step="0.1" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">🛠 Drilling Technique</label>
+                            <select class="form-select" name="drilling_technique">
+                                <option value="Manual">Manual</option>
+                                <option value="Rotary">Rotary</option>
+                                <option value="Percussion">Percussion</option>
+                                <option value="Auger">Auger</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">🔍 Predict</button>
+            </form>
+
+            {% if result %}
+            <div class="result-box">
+                <h5>📊 Prediction Result</h5>
+                <p><strong>✅ Well Suitability:</strong> {{ result.Well_Suitability }}</p>
+                <p><strong>📏 Depth (m):</strong> {{ result.Depth }}</p>
+                <p><strong>🚰 Discharge (liters/sec):</strong> {{ result.Discharge }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
